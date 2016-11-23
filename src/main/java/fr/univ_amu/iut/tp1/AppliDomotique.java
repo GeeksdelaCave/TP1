@@ -1,6 +1,5 @@
 package fr.univ_amu.iut.tp1;
 
-import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Scanner;
@@ -13,26 +12,24 @@ public class AppliDomotique {
     private static Collection<IConnectable> listeObjetsConnectes = new ArrayList<IConnectable>();
 
     public static void main(String[] args) {
-        int saisie = 0;
 
         do {
-                Scanner scanner = new Scanner(System.in);
-                saisie = scanner.nextInt();
+            try {
+                //Class<?> obj =  Class.forName(nom);
+                //c = (IConnectable) obj.newInstance();
 
-                switch (saisie) {
-                    case 0:
-                        System.out.println("Adèle : \"This is the end...\"");
-                        break;
-                    case 1:
-                        Radio radio = new Radio();
-                        ajouter(radio);
-                        break;
-                    case 2:
-                        Cafetiere cafetiere = new Cafetiere();
-                        ajouter(cafetiere);
-                        break;
-                }
-        } while (saisie != 0);
+                Scanner scanner = new Scanner(System.in);
+                String lu = scanner.nextLine();
+                if (lu == "") break;
+
+                IFabrique fabrique = new FabriqueConcrete();
+                IConnectable objetConnecte = fabrique.creer(lu);
+                objetConnecte.configurer();
+                listeObjetsConnectes.add(objetConnecte);
+            } catch (NullPointerException e) {
+                System.out.println("L'objet n'existe pas : " + e.getMessage());
+            }
+        } while (true);
     }
 
     public static void ajouter(IConnectable iconnectable) {
@@ -40,6 +37,10 @@ public class AppliDomotique {
         listeObjetsConnectes.add(iconnectable);
     }
 
+    /**
+     * Pour les tests
+     * @return La liste des objets connectés
+     */
     public static Collection<IConnectable> getListeObjetsConnectes() {
         return listeObjetsConnectes;
     }
